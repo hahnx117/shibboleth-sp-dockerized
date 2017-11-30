@@ -1,11 +1,13 @@
 FROM centos:centos7
 
-MAINTAINER Unicon, Inc.
-
 RUN yum -y update \
     && yum -y install wget \
+    && rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
+    && rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm \
+    && yum -y install epel-release \
+    && yum -y update \
     && wget http://download.opensuse.org/repositories/security://shibboleth/CentOS_7/security:shibboleth.repo -P /etc/yum.repos.d \
-    && yum -y install httpd shibboleth.x86_64 mod_ssl \
+    && yum -y install httpd shibboleth.x86_64 mod_ssl php70w php70w-mbstring php70w-mcrypt php70w-pear php70w-xml wget \
     && yum -y clean all
 
 COPY httpd-shibd-foreground /usr/local/bin/
@@ -24,7 +26,12 @@ RUN test -d /var/run/lock || mkdir -p /var/run/lock \
     && sed -i 's/<\/VirtualHost>/ErrorLogFormat \"httpd-ssl-error [%{u}t] [%-m:%l] [pid %P:tid %T] %7F: %E: [client\\ %a] %M% ,\\ referer\\ %{Referer}i\"\n<\/VirtualHost>/g' /etc/httpd/conf.d/ssl.conf \
     && sed -i 's/CustomLog logs\/ssl_request_log/CustomLog \/dev\/stdout/g' /etc/httpd/conf.d/ssl.conf \
     && sed -i 's/TransferLog logs\/ssl_access_log/TransferLog \/dev\/stdout/g' /etc/httpd/conf.d/ssl.conf
-    
-EXPOSE 80 443
+
+COPY /shibboleth-sp/ /etc/shibboleth/
+COPY index.php /var/www/html/
+
+EXPOSE 8080
+
+USER apache
 
 CMD ["httpd-shibd-foreground"]
