@@ -7,7 +7,7 @@ RUN yum -y update \
     && yum -y install epel-release \
     && yum -y update \
     && wget http://download.opensuse.org/repositories/security://shibboleth/CentOS_7/security:shibboleth.repo -P /etc/yum.repos.d \
-    && yum -y install httpd shibboleth.x86_64 mod_ssl php70w php70w-mbstring php70w-mcrypt php70w-pear php70w-xml wget \
+    && yum -y install httpd shibboleth.x86_64 mod_ssl php70w \
     && yum -y clean all
 
 COPY httpd-shibd-foreground /usr/local/bin/
@@ -27,11 +27,11 @@ RUN test -d /var/run/lock || mkdir -p /var/run/lock \
     && sed -i 's/CustomLog logs\/ssl_request_log/CustomLog \/dev\/stdout/g' /etc/httpd/conf.d/ssl.conf \
     && sed -i 's/TransferLog logs\/ssl_access_log/TransferLog \/dev\/stdout/g' /etc/httpd/conf.d/ssl.conf
 
-COPY /shibboleth-sp/ /etc/shibboleth/
+COPY shibboleth-sp/ /etc/shibboleth/
 COPY index.php /var/www/html/
 
 EXPOSE 8080
 
-USER apache
+# USER apache
 
 CMD ["httpd-shibd-foreground"]
