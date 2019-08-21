@@ -22,7 +22,7 @@ COPY httpd.conf /etc/httpd/conf/httpd.conf
 RUN test -d /var/run/lock || mkdir -p /var/run/lock \
   && test -d /var/lock/subsys/ || mkdir -p /var/lock/subsys/ \
   && chmod +x /etc/shibboleth/shibd-redhat \
-  && chown shibd:0 /etc/shibboleth/shibd-redhat \
+  && chown shibd:0 /etc/shibboleth/shibd-redhat /var/cache/shibboleth \
   && echo $'export LD_LIBRARY_PATH=/opt/shibboleth/lib64:$LD_LIBRARY_PATH\n'\
   > /etc/sysconfig/shibd \
   && chmod +x /etc/sysconfig/shibd /etc/shibboleth/shibd-redhat /usr/local/bin/httpd-shibd-foreground \
