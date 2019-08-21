@@ -32,9 +32,6 @@ RUN test -d /var/run/lock || mkdir -p /var/run/lock \
   && sed -i 's/CustomLog logs\/ssl_request_log/CustomLog \/dev\/stdout/g' /etc/httpd/conf.d/ssl.conf \
   && sed -i 's/TransferLog logs\/ssl_access_log/TransferLog \/dev\/stdout/g' /etc/httpd/conf.d/ssl.conf
 
-COPY shibboleth-sp/ /etc/shibboleth/
-COPY app/ /var/www/html
-
 EXPOSE 8080
 
 USER apache
