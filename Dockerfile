@@ -16,6 +16,7 @@ RUN yum -y update \
   && yum -y clean all
 
 COPY httpd.conf /etc/httpd/conf/httpd.conf
+COPY shib.conf /etc/httpd/conf.d/shib.conf
 COPY --chown=shibd:0 httpd-shibd-foreground /usr/local/bin/
 COPY --chown=shibd:0 shibboleth/ /etc/shibboleth/
 
