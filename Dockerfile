@@ -15,8 +15,8 @@ RUN yum -y update \
   && yum -y install httpd shibboleth-3.0.4-3.2 mod_ssl php70w \
   && yum -y clean all
 
-COPY httpd.conf /etc/httpd/conf/httpd.conf
-COPY shib.conf /etc/httpd/conf.d/shib.conf
+COPY --chown=shibd:0 httpd.conf /etc/httpd/conf/httpd.conf
+COPY --chown=shibd:0 shib.conf /etc/httpd/conf.d/shib.conf
 COPY --chown=shibd:0 httpd-shibd-foreground /usr/local/bin/
 COPY --chown=shibd:0 shibboleth/ /etc/shibboleth/
 
