@@ -1,5 +1,10 @@
 FROM centos:centos7
 
+LABEL maintainer="Unicon, Inc."
+
+#Workaround since OpenSUSE's provo-mirror is not working properly
+#COPY security:shibboleth.repo /etc/yum.repos.d/security:shibboleth.repo
+
 RUN yum -y update \
     && yum -y install wget \
     && rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
@@ -7,7 +12,7 @@ RUN yum -y update \
     && yum -y install epel-release \
     && yum -y update \
     && wget http://download.opensuse.org/repositories/security://shibboleth/CentOS_7/security:shibboleth.repo -P /etc/yum.repos.d \
-    && yum -y install httpd shibboleth.x86_64 mod_ssl php70w \
+    && yum -y install httpd shibboleth-3.0.4-3.2 mod_ssl php70w \
     && yum -y clean all
 
 COPY httpd-shibd-foreground /usr/local/bin/
@@ -17,7 +22,7 @@ RUN test -d /var/run/lock || mkdir -p /var/run/lock \
     && test -d /var/lock/subsys/ || mkdir -p /var/lock/subsys/ \
     && chmod +x /etc/shibboleth/shibd-redhat \
     && echo $'export LD_LIBRARY_PATH=/opt/shibboleth/lib64:$LD_LIBRARY_PATH\n'\
-       > /etc/sysconfig/shibd \
+    > /etc/sysconfig/shibd \
     && chmod +x /etc/sysconfig/shibd /etc/shibboleth/shibd-redhat /usr/local/bin/httpd-shibd-foreground \
     && sed -i 's/ErrorLog "logs\/error_log"/ErrorLog \/dev\/stdout/g' /etc/httpd/conf/httpd.conf \
     && echo -e "\nErrorLogFormat \"httpd-error [%{u}t] [%-m:%l] [pid %P:tid %T] %7F: %E: [client\ %a] %M% ,\ referer\ %{Referer}i\"" >> /etc/httpd/conf/httpd.conf \
@@ -32,6 +37,6 @@ COPY index.php /var/www/html/
 
 EXPOSE 8080
 
-# USER apache
+USER apache
 
 CMD ["httpd-shibd-foreground"]
