@@ -32,10 +32,10 @@ RUN test -d /var/run/lock || mkdir -p /var/run/lock \
   && sed -i 's/TransferLog logs\/ssl_access_log/TransferLog \/dev\/stdout/g' /etc/httpd/conf.d/ssl.conf \
   && rm -rf /run/httpd \
   && mkdir /run/httpd \
-  && chown -R shibd:0 /etc/shibboleth/shibd-redhat /var/cache/shibboleth /etc/sysconfig/shibd /usr/local/bin/httpd-shibd-foreground \
-  && chmod +gx /etc/sysconfig/shibd /etc/shibboleth/shibd-redhat /usr/local/bin/httpd-shibd-foreground \
+  && chown -R shibd:0 /etc/shibboleth/shibd-redhat /var/cache/shibboleth /etc/sysconfig/shibd /usr/local/bin/httpd-shibd-foreground /var/lock/subsys \
+  && chmod a+x /etc/sysconfig/shibd /etc/shibboleth/shibd-redhat /usr/local/bin/httpd-shibd-foreground \
   && chmod -R a+rw /etc/httpd/conf /etc/httpd/conf.d /etc/shibboleth /var/cache/shibboleth /run/httpd \
-  && chmod -R a+rwx /var/run/shibboleth \
+  && chmod -R a+rwx /var/run/shibboleth /var/lock/subsys \
   && rm /etc/httpd/conf.d/ssl.conf
 
 EXPOSE 8080
